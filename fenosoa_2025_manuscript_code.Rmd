@@ -1,0 +1,356 @@
+---
+title: "fenosoa_2025_manuscript_code"
+author: "Kacie Ring"
+date: "2025-01-03"
+output: 
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+The code below was used for the statistical analyses and data visulaization for the manuscript titled, "Gut passage in lemurs enhances the germination of mistletoe seeds Bakerella gonoclada, in a Madagascar rainforest" 
+
+Authors: Zo Samuel Ella Fenosoa, Cara E. Brook, Amy E. Dunham, Hajanirina F. Rakotomanana, Hanta Razafindraibe, Kacie A. Ring
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+# Load the packages
+library(survival)
+library(survminer)
+library(ggsignif)
+library(ggplot2)
+library(tidyverse)
+library(ggsignif)
+library(lubridate)
+library(survival)
+library(boot)
+library(car)
+library(dplyr)
+library(nlme)
+library(MASS)
+library(lme4)
+
+```
+
+
+
+#### Data cleaning, replacing NAs with zero values 
+
+```{r}
+
+#read in the dataframe 
+germ <- read.csv("germination.csv")
+
+
+#datacleaning
+germ <- germ %>% 
+  mutate(hypocot_lgth_final = replace_na(hypocot_lgth_final, 0),  #changing NA values to 0
+         time_to_germ = replace_na(time_to_germ, 0),              #changing NA values to 0 
+         leaves_lgth_final = replace_na(leaves_lgth_final, 0),     #changing NA values to 0 
+         death = 1,                                                #changing NA values to 0
+         seed_type = as.factor(seed_type),
+         source_seed = as.factor(source_seed))
+
+```
+
+
+### Statistical GLMM Model 1: germination probability model 
+
+```{r statstical model 1}
+
+#Model 1: Probability of germination, binomial distribution 
+
+
+
+#we want to set hand-pulled seeds as the reference for the model so we can more easily compare how defecated changes germination
+germ$seed_type <- relevel(germ$seed_type, "plant") #set plant as reference for the model 
+m1 <- glmer(germ_Y_N ~ seed_type + (1|source_seed), family = "binomial", data = germ)
+summary(m1) #model output 
+ranef(m1) #intercepts of the random effect 
+      
+#fitting the full model without a random effect to see if its important/significant 
+reduced_model <- glm(germ_Y_N ~ seed_type, family = binomial, data = germ)
+summary(reduced_model)
+
+#Chi-sq for model comparison 
+model_compare <- anova(m1, reduced_model, test = "Chisq")
+summary(model_compare)
+
+#create the table for the supplemental information 
+#tab_model(m1,  pred.labels = c("Intercept", "Seed source (Defecated)"), 
+         # dv.labels = "Germinated (Y/N)")
+
+```
+
+
+
+### Figure 1a plot: Percent germination  
+
+
+```{r data cleaning and plotting for fig 1, warnings=FALSE, fig.show="hold", echo=FALSE, output=FALSE}
+
+#data cleaning and table creation for figure 
+germ_summary <- germ %>%
+  group_by(seed_type) %>%
+  summarise(
+    n_germinated = sum(germ_Y_N == 1),
+    total = n(),
+    percentage = (n_germinated/total) * 100
+  )
+
+germ_summary
+```
+
+
+```{r}
+#reorder the levles of the factor for aesthetic reasons 
+
+germ_summary$seed_type <- factor(germ_summary$seed_type, levels = c("plant", "feces"))
+
+# Create the plot
+Figure_1a <- ggplot(germ_summary, aes(x = seed_type, y = percentage, fill = seed_type)) + # Added fill aesthetic
+  geom_bar(stat = "identity", width = 0.6) +
+  geom_signif(
+    comparisons = list(c("plant", "feces")),
+    map_signif_level = TRUE,
+    annotations = "***",
+    textsize = 6,
+    vjust = 0.6
+  ) +
+  scale_x_discrete(labels = c("Hand-removed\n(N = 48)", "Defecated\n(N = 18)")) +
+  scale_fill_manual(values = c("darkolivegreen", "chocolate4"), # Define colors
+                    labels = c("Hand-removed", "Defecated"),     # Define labels
+                    name = "Seed source") +                      # Legend title
+  labs(
+    x = "Seed source",
+    y = "Germination percentage (%)"
+  ) +
+  ylim(0, 105) +
+  theme_bw() +
+  theme(
+    axis.text = element_text(size = 9.5),
+    axis.title = element_text(size = 11),
+    legend.position = "bottom"                                  # Position legend at bottom
+  )
+
+#save the figure 
+ggsave("Figure_1a.png", plot = Figure_1a, width = 10, height = 7, device = png, dpi = 500)
+
+Figure_1a
+
+```
+
+
+### Time to germination stats, exploratory data analysis 
+
+
+```{r}
+
+#basis stats for time to germination 
+
+germ_stats <- germ %>%
+  filter(time_to_germ > 0) %>%
+  group_by(seed_type) %>% 
+  summarize(Min = min(time_to_germ),
+             Q1 = quantile(time_to_germ, .25),
+            mean = mean(time_to_germ), 
+             Q3 = quantile(time_to_germ, .75),
+             Max = max(time_to_germ),
+            sd = sd(time_to_germ)
+             )
+
+germ_stats
+```
+
+
+
+### Figure 1b plot:  A cumulative incidence plot visually represents the probability of a specific event occurring within a given 
+
+
+```{r}
+
+# Remove ggsurvfit from your package loading section
+
+# For Figure 1b, replace the ggsurvfit code with this:
+
+# Create the survival fit
+fit_germ <- survfit(Surv(time_to_germ, germ_Y_N) ~ seed_type, data=germ)
+
+# For germination plot (Figure 1b)
+
+Figure_1b <- ggsurvplot(
+  fit_germ,
+  data = germ,
+  fun = "event",  # For cumulative incidence
+  size = 1,
+  conf.int = TRUE,
+  palette = c("chocolate4", "darkolivegreen"),
+  legend.labs = c("Defecated", "Hand-removed"),
+  legend.title = "Seed source",
+  legend = "bottom",
+  xlab = "Time (days)",
+  ylab = "Cumulative proportion of seeds germinated (%)",
+  xlim = c(0, 7),
+  ggtheme = theme_bw()
+)
+# Extract the actual ggplot object
+Figure_1b <- Figure_1b$plot
+
+
+#save the plot 
+ggsave("Figure_1b.pdf", plot = Figure_1b, width = 10, height = 7)
+
+Figure_1b
+
+```
+
+
+
+
+### Figure 1c and Survival analysis ( time-to-event data anlysis)
+
+Survival data, also called time-to-event data, consist of a distinct start time and end time and analysis aims to predict the time until an event occurs 
+
+```{r Kaplan-Meier survival curve}
+# Analysis for survival (Figure 1c)
+fit_surv <- survfit(Surv(time_to_death, death) ~ seed_type, data=germ)
+
+# Statistical tests for survival
+
+surv_diff <- survdiff(Surv(time_to_death, death) ~ seed_type, data=germ)
+cox_model <- coxph(Surv(time_to_death, death) ~ seed_type, data=germ)
+
+
+# For survival plot (Figure 1c)
+
+Figure_1c <- ggsurvplot(
+  fit_surv,
+  data = germ,
+  size = 1,
+  palette = c("darkolivegreen", "chocolate4"),
+  conf.int = TRUE,
+  pval = TRUE,
+  pval.coord = c(0, 0.1),
+  risk.table = FALSE,
+  legend = "bottom",
+  xlab = "Time (days)",
+  legend.labs = c("Hand-removed Seeds", "Defecated Seeds"),
+  ggtheme = theme_bw()
+)
+
+# Extract the actual ggplot object
+Figure_1c <- Figure_1c$plot
+
+
+# Print statistical results
+cat("Survival Analysis Results:\n")
+cat("\nLog-rank test:\n")
+print(surv_diff)
+cat("\nCox proportional hazards model:\n")
+print(summary(cox_model))
+
+# Save plots
+ggsave("Figure_1b.pdf", plot = Figure_1b, width = 10, height = 7)
+ggsave("Figure_1c.pdf", plot = Figure_1c, width = 10, height = 7)
+
+
+```
+
+
+
+
+### GLMM Model 2 prediciting hypocotyl length 
+
+
+```{r statistial model 3}
+
+#Model 3: hypocotyl length between seeds sources 
+
+time_to_germ_dat <- germ %>%
+  filter(germ_Y_N == 1)
+
+hist(time_to_germ_dat$hypocot_lgth_final) #right skewed data Y variable 
+mean(time_to_germ_dat$hypocot_lgth_final)
+var(time_to_germ_dat$hypocot_lgth_final)
+# mean > variance 
+
+#glm with possion distribution becasue mean > variance 
+m4 <- glmer(hypocot_lgth_final ~ seed_type + (1|source_seed), family = poisson(link = "log"), data = germ)
+#model results 
+summary(m4)
+
+#lets check out the mode where we remove random effects 
+reduced_model_2 <- glm(hypocot_lgth_final ~ seed_type, family = poisson(link = "log"), data = germ)
+
+#compare models woth an anova 
+anova(m4, reduced_model_2, test = "Chisq")
+
+
+```
+
+
+```{r results table}
+
+#tab_model(m4,
+        #  pred.labels = c("Intercept", "Seed source (Defecated)"), 
+        #  dv.labels = ("Hypocotyl length (cm)"))
+
+```
+
+
+### Figure 1d plot: Violin plot showing diiferences in hypocotyl length 
+
+```{r Figure 1d}
+
+ Figure_1d <- germ %>% 
+ arrange(factor(seed_type, levels = c("feces", "plant"))) %>%
+  ggplot(., aes(seed_type, hypocot_lgth_final, fill = seed_type)) +
+  geom_violin() +
+  geom_jitter(height = 0, width = 0.1) + 
+  geom_signif(comparisons = list(c("feces", "plant")), map_signif_level = TRUE,    annotations = "***", textsize = 6) + 
+  ylim(0,8) + #adding significance astericks 
+  # Increase legend title font size
+  scale_fill_manual(values = c("darkolivegreen", "chocolate4"), labels = c("Hand-removed", "Defecated")) +
+  labs(y = "Hypocotyl length (mm)", x = "Seed source", color = "Seed source", fill = "Seed source") + 
+ scale_x_discrete(labels = c('Hand-removed (N = 48)', 'Defecated (N = 18)')) + 
+  theme_bw()
+
+Figure_1d <-Figure_1d + theme(axis.title.y = element_text(size=8), axis.text.y = element_text(size = 10))
+Figure_1d <-Figure_1d + theme(legend.position = "bottom") 
+
+ggsave("Figure_1d.png", plot = Figure_1d, width = 10, height = 7, device = png, dpi = 500)
+
+Figure_1d
+
+```
+
+
+```{r}
+source("group_by_summary_stats.R")
+group_by_summary_stats(germ, hypocot_lgth_final, seed_type)
+
+```
+
+
+### Final combined Figure 1 for manuscript
+
+```{r}
+library(patchwork)
+
+# Combine the plots with annotations
+combined_plot <- (Figure_1a | Figure_1b) / (Figure_1c| Figure_1d)
+
+# Add annotations
+combined_plot <- combined_plot + plot_annotation(tag_levels = 'a')
+
+ggsave("my_combined_plot.png", plot = combined_plot, width = 10, height = 8, dpi = 300)
+
+#final figure for panuscript
+combined_plot
+```
+
+

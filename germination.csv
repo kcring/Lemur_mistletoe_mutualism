@@ -1,0 +1,67 @@
+﻿seed_id,seed_type,source_seed,Bak_sp,germ_Y_N,time_to_germ,time_to_death,hypocot_lgth_final,leaves_lgth_final,plant_date
+ER01,feces,Eulemur_rufifrons,B_gonoclada,1,4,24,1,0,1/18/23
+ER02,feces,Eulemur_rufifrons,B_gonoclada,1,4,25,2,0,1/18/23
+ER03,feces,Eulemur_rufifrons,B_gonoclada,1,4,32,3,0,1/18/23
+ER04,feces,Eulemur_rufifrons,B_gonoclada,1,4,46,5,3,1/18/23
+ER05,feces,Eulemur_rufifrons,B_gonoclada,0,NA,1,NA,,1/18/23
+UNK01,feces,Unknown frugivore ID,B_gonoclada,1,3,47,4,0,1/19/23
+UNK02,feces,Unknown frugivore ID,B_gonoclada,1,3,47,4,2,1/19/23
+UNK03,feces,Unknown frugivore ID,B_gonoclada,1,3,81,7,5,1/19/23
+UNK04,feces,Unknown frugivore ID,B_gonoclada,1,3,76,6,6,1/19/23
+UNK05,feces,Unknown frugivore ID,B_gonoclada,1,3,56,6,2,1/19/23
+UNK06,feces,Unknown frugivore ID,B_gonoclada,1,3,75,7,4,1/19/23
+UNK07,feces,Unknown frugivore ID,B_gonoclada,1,3,36,3,0,1/19/23
+UNK08,feces,Unknown frugivore ID,B_gonoclada,1,3,35,4,2,1/19/23
+UNK09,feces,Unknown frugivore ID,B_gonoclada,1,3,44,4,4,1/19/23
+UNK10,feces,Unknown frugivore ID,B_gonoclada,1,3,31,3,2,1/19/23
+UNK11,feces,Unknown frugivore ID,B_gonoclada,1,3,45,4,0,1/19/23
+UNK12,feces,Unknown frugivore ID,B_gonoclada,1,3,47,5,1,1/19/23
+UNK13,feces,Unknown frugivore ID,B_gonoclada,1,3,55,5,2,1/19/23
+BG01,plant,BG_A,B_gonoclada,0,NA,22,NA,,2/21/23
+BG02,plant,BG_A,B_gonoclada,0,NA,2,NA,,2/21/23
+BG03,plant,BG_A,B_gonoclada,1,5,22,3,0,2/21/23
+BG04,plant,BG_A,B_gonoclada,0,NA,12,NA,,2/21/23
+BG05,plant,BG_A,B_gonoclada,0,NA,12,NA,,2/21/23
+BG06,plant,BG_A,B_gonoclada,0,NA,3,NA,,2/21/23
+BG07,plant,BG_A,B_gonoclada,0,NA,2,NA,,2/21/23
+BG08,plant,BG_A,B_gonoclada,0,NA,3,NA,,2/21/23
+BG09,plant,BG_A,B_gonoclada,1,7,20,1,0,2/21/23
+BG10,plant,BG_A,B_gonoclada,1,5,21,2,0,2/21/23
+BG11,plant,BG_A,B_gonoclada,0,NA,22,NA,,2/21/23
+BG12,plant,BG_B,B_gonoclada,0,NA,3,NA,,2/21/23
+BG13,plant,BG_B,B_gonoclada,0,NA,21,NA,,2/21/23
+BG14,plant,BG_B,B_gonoclada,0,NA,12,NA,,2/21/23
+BG15,plant,BG_C,B_gonoclada,0,NA,18,NA,,2/28/23
+BG16,plant,BG_C,B_gonoclada,0,NA,12,NA,,2/28/23
+BG17,plant,BG_C,B_gonoclada,1,5,19,2,0,2/28/23
+BG18,plant,BG_C,B_gonoclada,0,NA,11,NA,,2/28/23
+BG19,plant,BG_C,B_gonoclada,0,NA,16,NA,,2/28/23
+BG20,plant,BG_C,B_gonoclada,1,6,16,1,0,2/28/23
+BG21,plant,BG_C,B_gonoclada,0,NA,16,NA,,2/28/23
+BG22,plant,BG_C,B_gonoclada,0,NA,14,NA,,2/28/23
+BG23,plant,BG_C,B_gonoclada,1,5,27,3,0,2/28/23
+BG24,plant,BG_C,B_gonoclada,0,NA,19,NA,,2/28/23
+BG25,plant,BG_D,B_gonoclada,0,NA,19,NA,,2/28/23
+BG26,plant,BG_D,B_gonoclada,0,NA,12,NA,,2/28/23
+BG27,plant,BG_D,B_gonoclada,0,NA,17,NA,,2/28/23
+BG28,plant,BG_D,B_gonoclada,0,NA,17,NA,,2/28/23
+BG29,plant,BG_D,B_gonoclada,0,NA,19,NA,,2/28/23
+BG30,plant,BG_D,B_gonoclada,0,NA,19,NA,,2/28/23
+BG31,plant,BG_D,B_gonoclada,0,NA,18,NA,,2/28/23
+BG32,plant,BG_D,B_gonoclada,0,NA,18,NA,,2/28/23
+BG33,plant,BG_D,B_gonoclada,0,NA,17,NA,,2/28/23
+BG34,plant,BG_D,B_gonoclada,1,6,19,2,0,2/28/23
+BG35,plant,BG_D,B_gonoclada,1,7,19,1,0,2/28/23
+BG36,plant,BG_D,B_gonoclada,0,NA,18,NA,,2/28/23
+BG37,plant,BG_D,B_gonoclada,0,NA,12,NA,,2/28/23
+BG38,plant,BG_D,B_gonoclada,0,NA,15,NA,,2/28/23
+BG39,plant,BG_D,B_gonoclada,0,NA,15,NA,,2/28/23
+BG40,plant,BG_D,B_gonoclada,0,NA,19,NA,,2/28/23
+BG41,plant,BG_D,B_gonoclada,0,NA,19,NA,,2/28/23
+BG42,plant,BG_D,B_gonoclada,0,NA,18,NA,,2/28/23
+BG43,plant,BG_D,B_gonoclada,0,NA,6,NA,,2/28/23
+BG44,plant,BG_D,B_gonoclada,0,NA,19,NA,,2/28/23
+BG45,plant,BG_D,B_gonoclada,0,NA,18,NA,,2/28/23
+BG46,plant,BG_D,B_gonoclada,0,NA,19,NA,,2/28/23
+BG47,plant,BG_D,B_gonoclada,0,NA,16,NA,,2/28/23
+BG48,plant,BG_D,B_gonoclada,0,NA,18,NA,,2/28/23
